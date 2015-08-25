@@ -4,10 +4,15 @@ Animations framework in scala using functional programming(which i am learning) 
 Paul Hudak's HaskelSchoolOfExpression.
  
 It is used to show animation on java swt canvas and html canvas(using scala js).
+ <br/>
  Examples
+ <br/>
  1)Clock
+ <br/>
  ![Alt text](/images/clock.gif?raw=true "Clock")
+ <br/>
  2)Moving Train
+ <br/>
  ![Alt text](/images/train.gif?raw=true "Moving train")
 
 ## Run awt animation
