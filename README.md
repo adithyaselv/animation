@@ -1,7 +1,4 @@
 # animation
-
-Animations framework in scala using functional programming(which i am learning) based on 
-Paul Hudak's HaskelSchoolOfExpression.
  
 It is used to show animation on java swt canvas and html canvas(using scala js).
  <br/>
@@ -21,8 +18,15 @@ Directly execute `drivers.awt.Clock` or `drivers.awt.Train` class to pop up anim
 
 ## Run html animation
 How to run scala-js is taken from [href](https://github.com/lihaoyi/workbench-example-app).
-
-Run `sbt fullOptJS` and open up 
+<br>
+<br>
+Run `sbt` to enter sbt console.
+<br>
+Run `clean` command.
+<br>
+Run `fastOptJS` command.
+<br>
 `http://localhost:12345/target/scala-2.11/classes/clock.html` or
+<br>
 `http://localhost:12345/target/scala-2.11/classes/train.html`
 

@@ -1,39 +1,51 @@
 package graphic
 
+import scalaz.effect.IO
+
 /**
  * Represents a draw operation on canvas C , draw operation returns type A.
  */
-trait Draw[A,C] { self =>
+sealed trait Draw[C, A] { self =>
 
   /**
    * for chaining multiple draw operations, it just
    * passes the canvas to the next draw operation.
    */
-  def flatMap[B](f: A => Draw[B,C]): Draw[B,C] = self match {
-    case Drawing(fa: (C => A)) => Drawing{ graphic =>
-        val drawB = f(fa(graphic))
-        drawB match {
-          case Drawing(fb) =>
-            fb(graphic)
-        }
-    }
+  def flatMap[B](f: A => Draw[C, B]): Draw[C, B] = self match {
+    case Drawing(fca) => Drawing{c =>
+        fca(c).flatMap{a => f(a) match {
+          case Drawing(fcb) => fcb(c)
+        }}}
   }
 
-  def map[B](f: A => B): Draw[B,C] = Drawing(graphic => f(self.run(graphic)))
+  def map[B](f: A => B): Draw[C, B] = self match {
+    case Drawing(fca) => Drawing(c => fca(c).map(f))
+  }
 
-  def unit[A](a: => A): Draw[A, C] =
-    Drawing(_ => a)
+
 
   /**
    * executes the draw operation on passed canvas.
    */
-  def run(canvas: C): A = self match {
-    case Drawing(fa: (C => A)) => fa(canvas)
+  def unsafeRun(canvas: C): A = self match {
+    case Drawing(drawA) => drawA(canvas).unsafePerformIO()
   }
 
+  def toIO(c: C):IO[A] = self match {
+    case Drawing(f) => f(c)
+  }
+
+}
+
+object Draw {
+  def unit[A, C](a: => A): Draw[C, A] =
+    Drawing(_ => IO(a))
 }
 
 /**
  * Simple drawing where the actual drawing operation is passed in constructor.
  */
-case class Drawing[A,C](f: C => A) extends Draw[A, C]
+case class Drawing[C, A](f: C => IO[A]) extends Draw[C, A]
+
+
+

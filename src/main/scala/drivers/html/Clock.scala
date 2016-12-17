@@ -20,13 +20,12 @@ object Clock {
     val ca = ClockAnimation.get
     val startTime = System.currentTimeMillis
 
-
-    dom.setInterval(() => {
+    dom.window.setInterval(() => {
       val currentTime = System.currentTimeMillis
       val time = currentTime - startTime
       val clock = ca.run(time)
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      clock.draw.run(canvas)
+      clock.draw.unsafeRun(canvas)
     }, 30)
   }
 }

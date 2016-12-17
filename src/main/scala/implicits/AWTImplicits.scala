@@ -1,13 +1,15 @@
 package implicits
 
-import java.awt.geom.{Area => JRegion, Ellipse2D, AffineTransform}
-import java.awt.{Color => JColor, Polygon => JPolygon, Graphics2D}
+import java.awt.geom.{AffineTransform, Ellipse2D, Area => JRegion}
+import java.awt.{Graphics2D, Color => JColor, Polygon => JPolygon}
 
 import graphic._
-import picture.{EmptyPic, Over, Basic, Picture}
+import picture.{Basic, EmptyPic, Over, Picture}
 import region._
 import shape.{Shape => _, _}
 import shape.{Shape => PlainShape}
+
+import scalaz.effect.IO
 
 /**
  * Contains enrichment in context of java awt.
@@ -48,23 +50,25 @@ object AWTImplicits {
     /**
      * returns a Draw operation for the region with passed color.
      */
-    def draw(color: Color): Draw[Unit, Graphics2D] = {
+    def draw(color: Color): Draw[Graphics2D, Unit] = {
       Drawing{g =>
-        val earlyColor = g.getColor
-        g.setColor(color.toJColor)
-        g.fill(region.toJRegion)
-        g.setColor(earlyColor)
+        IO {
+          val earlyColor = g.getColor
+          g.setColor(color.toJColor)
+          g.fill(region.toJRegion)
+          g.setColor(earlyColor)
+        }
       }
     }
 
-    def draw: Draw[Unit, Graphics2D] = Drawing(g => g.fill(region.toJRegion))
+    def draw: Draw[Graphics2D, Unit] = Drawing(g => IO(g.fill(region.toJRegion)))
   }
 
   implicit class PictureWrapper(picture: Picture)(implicit size: (Int, Int))  {
-    def draw: Draw[Unit, Graphics2D] = picture match {
+    def draw: Draw[Graphics2D, Unit] = picture match {
       case Basic(c, r) => r.draw(c)
       case Over(o1, o2) => o2.draw.flatMap(_ => o1.draw)//first draw o2, then draw o1
-      case EmptyPic => Drawing(_ => ()) //don't draw anything
+      case EmptyPic => Drawing(_ => IO()) //don't draw anything
     }
 
   }

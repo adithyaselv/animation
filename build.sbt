@@ -11,12 +11,13 @@ name := "animation"
 
 version := "1.0"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.7"
 
 
 libraryDependencies ++= Seq(
-  "org.scala-js" %%% "scalajs-dom" % "0.8.0",
-  "com.lihaoyi" %%% "scalatags" % "0.5.2"
+  "org.scala-js" %%% "scalajs-dom" % "0.9.1",
+  "org.scalaz" %% "scalaz-effect" % "7.2.0",
+  "com.github.japgolly.fork.scalaz" %%% "scalaz-effect" % "7.2.0"
 )
 
 bootSnippet := "example.ScalaJSExample().main(document.getElementById('canvas'));"

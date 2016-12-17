@@ -11,6 +11,6 @@ import graphic.Draw
 class DrawableCanvas(draw: Draw[Unit, Graphics2D]) extends JPanel{
   override def paintComponent(g: Graphics): Unit = {
     val g2D = g.asInstanceOf[Graphics2D]
-    draw.run(g2D)
+    draw.unsafeRun(g2D)
   }
 }

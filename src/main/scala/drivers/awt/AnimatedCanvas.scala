@@ -20,12 +20,13 @@ class AnimatedCanvas(animate: Animation[Picture])  extends JPanel with ActionLis
 
   override def paintComponent(g: Graphics): Unit = {
     implicit  val size  = (getWidth, getHeight)
+    g.clearRect(0,0,size._1, size._2)
     val g2D = g.asInstanceOf[Graphics2D]
     val currentTime = System.currentTimeMillis
     val time = (currentTime - startTime)
 
     val da = Animation.lift1(animate) {pic =>
-      pic.draw.run(g2D)
+      pic.draw.unsafeRun(g2D)
     }
     da.run(time)
   }
